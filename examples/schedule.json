@@ -1,0 +1,17 @@
+{
+  "schedules": [
+    {
+      "name": "起床",
+      "time": "07:00",
+      "days": ["mon", "tue", "wed", "thu", "fri", "sat", "sun"],
+      "message": "おはようございます。起きる時間です。"
+    },
+    {
+      "name": "終業",
+      "time": "05:26",
+      "days": ["mon", "tue", "wed", "thu", "fri"],
+      "message": "業務終了の時間です。お疲れ様でした。"
+    }
+  ]
+}
+

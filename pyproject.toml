@@ -1,0 +1,66 @@
+[tool.poetry]
+name = "routinenotifier"
+version = "0.1.0"
+description = "CLI to speak scheduled notifications using Google Cloud Text-to-Speech"
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+packages = [{ include = "routinenotifier" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+typer = {version = "^0.12.3", extras = ["all"]}
+pydantic = "^2.8.0"
+google-cloud-texttospeech = "^2.16.4"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.0"
+black = "^24.8.0"
+ruff = "^0.6.5"
+mypy = "^1.11.0"
+pre-commit = "^3.8.0"
+
+[tool.poetry.scripts]
+routinenotifier = "routinenotifier.cli:app"
+
+[tool.black]
+line-length = 100
+target-version = ["py310", "py311"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = [
+  "E",  # pycodestyle errors
+  "F",  # pyflakes
+  "I",  # isort
+  "B",  # flake8-bugbear
+  "UP", # pyupgrade
+]
+ignore = []
+
+[tool.ruff.lint.isort]
+force-sort-within-sections = true
+case-sensitive = true
+known-first-party = ["routinenotifier"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_unused_configs = true
+check_untyped_defs = true
+disallow_incomplete_defs = true
+disallow_untyped_defs = true
+no_implicit_optional = true
+strict_optional = true
+warn_redundant_casts = true
+warn_return_any = true
+warn_unused_ignores = true
+show_error_codes = true
+pretty = true
+plugins = []
+files = ["routinenotifier"]
+
+[build-system]
+requires = ["poetry-core>=1.9.0"]
+build-backend = "poetry.core.masonry.api"
