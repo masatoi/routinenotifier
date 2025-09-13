@@ -8,7 +8,7 @@ import typer
 from .config import AppConfig, ConfigError, VoiceConfig, load_config, load_voice_config
 from .cache import CachingSynthesizer
 from .scheduler import run_forever
-from .tts import GoogleTTS, list_voices
+from .tts import GoogleTTS, list_voices, Synthesizer
 
 app = typer.Typer(help="Routine Notifier: speak scheduled messages via Google TTS")
 
@@ -81,6 +81,7 @@ def run(
 
     try:
         base_tts = GoogleTTS()
+        tts: Synthesizer
         if no_cache:
             tts = base_tts
         else:
@@ -191,6 +192,7 @@ def speak(
 
     try:
         base_tts = GoogleTTS()
+        tts: Synthesizer
         if no_cache:
             tts = base_tts
         else:

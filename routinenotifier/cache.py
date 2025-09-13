@@ -19,12 +19,12 @@ CACHE_VERSION = "v1"
 def _default_cache_root() -> Path:
     system = platform.system()
     if system == "Windows":
-        base = os.environ.get("LOCALAPPDATA") or os.environ.get("TEMP") or str(Path.home())
-        return Path(base) / "routinenotifier" / "cache"
+        win_base = os.environ.get("LOCALAPPDATA") or os.environ.get("TEMP") or str(Path.home())
+        return Path(win_base) / "routinenotifier" / "cache"
     # POSIX/XDG
-    base = os.environ.get("XDG_CACHE_HOME")
-    if base:
-        return Path(base) / "routinenotifier"
+    xdg_base = os.environ.get("XDG_CACHE_HOME")
+    if xdg_base:
+        return Path(xdg_base) / "routinenotifier"
     return Path.home() / ".cache" / "routinenotifier"
 
 

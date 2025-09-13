@@ -30,7 +30,7 @@ class GoogleTTS:
         audio_encoding: str = "MP3",
     ) -> bytes:
         try:
-            from google.cloud import texttospeech  # type: ignore
+            from google.cloud import texttospeech
         except Exception as e:  # pragma: no cover - import-time path
             raise RuntimeError(
                 "google-cloud-texttospeech is required. Install the package "
@@ -114,7 +114,7 @@ def list_voices(language_code: str | None = None) -> list[VoiceInfo]:
     Example language codes: "ja-JP", "en-US".
     """
     try:
-        from google.cloud import texttospeech  # type: ignore
+        from google.cloud import texttospeech
     except Exception as e:  # pragma: no cover - import-time path
         raise RuntimeError(
             "google-cloud-texttospeech is required. Install the package "
