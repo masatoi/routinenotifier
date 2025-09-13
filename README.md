@@ -1,7 +1,6 @@
 # Routine Notifier (CLI)
 
-[![Tests](https://github.com/OWNER/REPO/actions/workflows/tests.yml/badge.svg)](https://github.com/OWNER/REPO/actions/workflows/tests.yml)
-<!-- Replace OWNER/REPO with your GitHub repository slug -->
+[![Tests](https://github.com/masatoi/routinenotifier/actions/workflows/tests.yml/badge.svg)](https://github.com/OWNER/REPO/actions/workflows/tests.yml)
 
 Speak scheduled messages using Google Cloud Text‑to‑Speech, driven by local JSON files.
 
