@@ -59,7 +59,7 @@
 - 依存未設定: `google-cloud-texttospeech` 未導入・ADC未設定時は実行時に明瞭なエラー文言。
 
 ## 品質管理と開発フロー
-- フォーマット: `black`（行長100）
+- フォーマット: Ruff フォーマッタ（`ruff format`、行長100）
 - Lint: `ruff`（pycodestyle/pyflakes/isort/bugbear/pyupgrade）
 - 型: `mypy`（`routinenotifier` 配下で厳格チェック）
 - テスト: `pytest`。ネットワーク不要の単体テストを重視（`DummyTTS`利用）。

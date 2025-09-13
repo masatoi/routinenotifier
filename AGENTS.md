@@ -19,14 +19,14 @@
   - `routinenotifier voices -l ja-JP`
 - Run CLI (module form): `python -m routinenotifier.cli …`
 - Tests: `PYTHONPATH=. pytest -q`
-- Format: `black .`
+- Format: `python -m ruff format .`
 - Lint: `python -m ruff check .` (autofix: `--fix`)
 - Types: `python -m mypy .`
 - Pre-commit: `pre-commit install` then commit normally.
 
 ## Coding Style & Naming Conventions
 - Language: Python 3.10+; use type annotations in `routinenotifier/*` (mypy-enforced).
-- Formatting: `black` (line length 100).
+- Formatting: Ruff formatter (`ruff format`), line length 100.
 - Linting: `ruff` with pycodestyle/pyflakes/isort/bugbear/pyupgrade rules.
 - Names: modules/files `snake_case.py`; functions/vars `snake_case`; classes `CamelCase`.
 
@@ -41,7 +41,7 @@
 - Reference issues in messages/PRs when applicable.
 - PR checklist:
   - Describe change, rationale, and how to validate (commands/examples).
-  - Ensure: `black`, `ruff`, `mypy`, and `pytest` all pass.
+  - Ensure: `ruff format`, `ruff check`, `mypy`, and `pytest` all pass.
   - Include docs updates (README/examples) for user-facing changes.
   - Update design docs under `design/` when behavior, interfaces, or architecture changes.
 

@@ -14,7 +14,6 @@ google-cloud-texttospeech = "^2.16.4"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.0"
-black = "^24.8.0"
 ruff = "^0.6.5"
 mypy = "^1.11.0"
 pre-commit = "^3.8.0"
@@ -22,9 +21,7 @@ pre-commit = "^3.8.0"
 [tool.poetry.scripts]
 routinenotifier = "routinenotifier.cli:app"
 
-[tool.black]
-line-length = 100
-target-version = ["py310", "py311"]
+## Black removed in favor of Ruff formatter
 
 [tool.ruff]
 line-length = 100
@@ -39,6 +36,11 @@ select = [
   "UP", # pyupgrade
 ]
 ignore = []
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
 
 [tool.ruff.lint.isort]
 force-sort-within-sections = true

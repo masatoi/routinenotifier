@@ -138,7 +138,7 @@ routinenotifier cache-clear -y --cache-dir ./cache
 ## Development
 ```bash
 # Format
-black .
+python -m ruff format .
 # Lint
 python -m ruff check .
 # Types
