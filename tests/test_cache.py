@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from routinenotifier.cache import CachingSynthesizer, CacheKey, cache_path_for, prune_cache
+from routinenotifier.cache import CachingSynthesizer
 from routinenotifier.tts import Synthesizer
 
 
@@ -23,9 +23,7 @@ class FakeSynth(Synthesizer):  # type: ignore[misc]
     ) -> bytes:
         self.calls += 1
         base = (
-            f"{text}|{language_code}|{voice_name}|{speaking_rate}|{pitch}|{audio_encoding}".encode(
-                "utf-8"
-            )
+            f"{text}|{language_code}|{voice_name}|{speaking_rate}|{pitch}|{audio_encoding}".encode()
         )
         if len(base) >= self.payload_size:
             return base

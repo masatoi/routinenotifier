@@ -1,17 +1,14 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
 import hashlib
 import json
 import os
-import platform
-import shutil
-import tempfile
-from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
+import platform
+import tempfile
 
 from .tts import Synthesizer
-
 
 CACHE_VERSION = "v1"
 
@@ -43,7 +40,7 @@ def _ext_for_encoding(encoding: str) -> str:
 class CacheKey:
     text: str
     language_code: str
-    voice_name: Optional[str]
+    voice_name: str | None
     speaking_rate: float
     pitch: float
     audio_encoding: str
@@ -63,7 +60,7 @@ class CacheKey:
         return hashlib.sha256(b).hexdigest()
 
 
-def cache_path_for(key: CacheKey, cache_dir: Optional[Path] = None) -> Path:
+def cache_path_for(key: CacheKey, cache_dir: Path | None = None) -> Path:
     root = cache_dir or _default_cache_root()
     root.mkdir(parents=True, exist_ok=True)
     ext = _ext_for_encoding(key.audio_encoding)
@@ -113,9 +110,9 @@ class CachingSynthesizer:
         self,
         inner: Synthesizer,
         *,
-        cache_dir: Optional[Path] = None,
+        cache_dir: Path | None = None,
         enabled: bool = True,
-        max_size_bytes: Optional[int] = None,
+        max_size_bytes: int | None = None,
     ) -> None:
         self.inner = inner
         self.cache_dir = cache_dir or _default_cache_root()
@@ -128,7 +125,7 @@ class CachingSynthesizer:
         text: str,
         *,
         language_code: str = "ja-JP",
-        voice_name: Optional[str] = None,
+        voice_name: str | None = None,
         speaking_rate: float = 1.0,
         pitch: float = 0.0,
         audio_encoding: str = "MP3",

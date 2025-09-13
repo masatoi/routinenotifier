@@ -1,14 +1,13 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Optional
 
 import typer
 
-from .config import AppConfig, ConfigError, VoiceConfig, load_config, load_voice_config
 from .cache import CachingSynthesizer
+from .config import AppConfig, ConfigError, VoiceConfig, load_config, load_voice_config
 from .scheduler import run_forever
-from .tts import GoogleTTS, list_voices, Synthesizer
+from .tts import GoogleTTS, Synthesizer, list_voices
 
 app = typer.Typer(help="Routine Notifier: speak scheduled messages via Google TTS")
 
@@ -50,23 +49,22 @@ _INTERVAL_OPT = typer.Option(1.0, help="Polling interval in seconds")
 _NO_CACHE_OPT = typer.Option(False, help="Disable on-disk audio cache")
 _CACHE_DIR_OPT = typer.Option(None, help="Cache directory (defaults to XDG cache)")
 _CACHE_MAX_MB_OPT = typer.Option(200, help="Cache size limit in MB (0 for unlimited)")
+_VOICECFG_OPT = typer.Option(None, help="Path to JSON with voice settings (overrides voice flags)")
 
 
 @app.command()
 def run(
     config: Path = _CONFIG_OPT,
     language_code: str = _LANG_OPT,
-    voice_name: Optional[str] = _VOICE_OPT,
+    voice_name: str = _VOICE_OPT,
     speaking_rate: float = _RATE_OPT,
     pitch: float = _PITCH_OPT,
     audio_encoding: str = _ENC_OPT,
     check_interval: float = _INTERVAL_OPT,
     no_cache: bool = _NO_CACHE_OPT,
-    cache_dir: Optional[Path] = _CACHE_DIR_OPT,
+    cache_dir: Path = _CACHE_DIR_OPT,
     cache_max_mb: int = _CACHE_MAX_MB_OPT,
-    voice_config: Optional[Path] = typer.Option(
-        None, help="Path to JSON with voice settings (overrides voice flags)"
-    ),
+    voice_config: Path = _VOICECFG_OPT,
 ) -> None:
     """Run the scheduler to speak messages at scheduled times."""
     try:
@@ -165,16 +163,14 @@ def voices(
 def speak(
     text: str = typer.Argument(..., help="Text to speak once"),
     language_code: str = _LANG_OPT,
-    voice_name: Optional[str] = _VOICE_OPT,
+    voice_name: str = _VOICE_OPT,
     speaking_rate: float = _RATE_OPT,
     pitch: float = _PITCH_OPT,
     audio_encoding: str = _ENC_OPT,
     no_cache: bool = _NO_CACHE_OPT,
-    cache_dir: Optional[Path] = _CACHE_DIR_OPT,
+    cache_dir: Path = _CACHE_DIR_OPT,
     cache_max_mb: int = _CACHE_MAX_MB_OPT,
-    voice_config: Optional[Path] = typer.Option(
-        None, help="Path to JSON with voice settings (overrides voice flags)"
-    ),
+    voice_config: Path = _VOICECFG_OPT,
 ) -> None:
     """Synthesize and play a single line of text."""
     # Apply voice config if provided
@@ -219,7 +215,7 @@ def speak(
 
 @app.command()
 def cache_clear(
-    cache_dir: Optional[Path] = _CACHE_DIR_OPT,
+    cache_dir: Path = _CACHE_DIR_OPT,
     yes: bool = typer.Option(False, "--yes", "-y", help="Confirm deletion without prompt"),
 ) -> None:
     """Clear all cached audio files."""

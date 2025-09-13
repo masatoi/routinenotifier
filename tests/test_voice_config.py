@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
-import json
 import pytest
 
 from routinenotifier.config import ConfigError, VoiceConfig, load_voice_config
