@@ -1,76 +1,149 @@
-Routine Notifier (CLI)
+# Routine Notifier (CLI)
 
-Purpose: Speak scheduled messages using Google Cloud Text-to-Speech, driven by a local JSON config.
+[![Tests](https://github.com/OWNER/REPO/actions/workflows/tests.yml/badge.svg)](https://github.com/OWNER/REPO/actions/workflows/tests.yml)
+<!-- Replace OWNER/REPO with your GitHub repository slug -->
 
-Quick start
-- Put a JSON config at `schedule.json` (see `examples/schedule.json`).
-- Ensure Google Cloud credentials are available via `GOOGLE_APPLICATION_CREDENTIALS` and the Text-to-Speech API is enabled.
-- Install deps with Poetry or pip, then run the CLI (see below).
+Speak scheduled messages using Google Cloud Text‑to‑Speech, driven by local JSON files.
 
-Prerequisites
-- Python: `>=3.10`
-- GCP: Text-to-Speech API enabled on your project
+## Quick Start
+1) Create a schedule JSON (see examples below).
+2) Ensure GCP credentials and TTS API are set up.
+3) Install dependencies and run the CLI.
+
+## Prerequisites
+- Python: >= 3.10
+- GCP: Enable the Text‑to‑Speech API on your project
 - Auth: Application Default Credentials (ADC)
-  - `gcloud auth application-default login` OR set the env var explicitly:
-    - `export GOOGLE_APPLICATION_CREDENTIALS="$HOME/.config/gcloud/application_default_credentials.json"`
 
-Install (Poetry)
-- Install Poetry and run: `poetry install`
+Set ADC via gcloud or env var:
 
-Install (pip)
-- `python -m venv .venv && source .venv/bin/activate`
-- `pip install -e .` (requires `pip>=23` and `setuptools`/`wheel`)
+```bash
+gcloud auth application-default login
+# or
+export GOOGLE_APPLICATION_CREDENTIALS="$HOME/.config/gcloud/application_default_credentials.json"
+```
 
-How to run
-- As installed console script (recommended):
-  - Validate: `routinenotifier validate examples/schedule.json`
-  - Run: `routinenotifier run --config examples/schedule.json`
-- As a Python module (no install):
-  - Validate: `python -m routinenotifier.cli validate examples/schedule.json`
-  - Run: `python -m routinenotifier.cli run --config examples/schedule.json`
+## Installation
 
-Note: Do NOT run `python routinenotifier/cli.py …` — relative imports will fail. Use the module form above or the installed console script.
+Using Poetry:
 
-Config schema
-- `schedules`: list of tasks with fields:
-  - `name`: task label
-  - `time`: `HH:MM` (24h)
-  - `days`: list of `mon..sun`
-  - `message`: text to speak
+```bash
+poetry install
+```
 
-CLI
-- `routinenotifier validate path/to/config.json` — validate config.
-- `routinenotifier run --config schedule.json [--language-code ja-JP --voice-name <name> --speaking-rate 1.0 --pitch 0.0 --audio-encoding MP3] [--voice-config examples/voice.json] [--no-cache] [--cache-dir <path>] [--cache-max-mb 200]` — run scheduler. If `--voice-config` is given, it overrides the individual voice flags.
-- `routinenotifier voices [-l ja-JP] [--json]` — list available Google TTS voices (optionally filter by language; `--json` for machine-readable output).
-- `routinenotifier speak "こんにちは" [--language-code ja-JP --voice-name <name> --speaking-rate 1.0 --pitch 0.0 --audio-encoding MP3] [--voice-config examples/voice.json] [--no-cache] [--cache-dir <path>] [--cache-max-mb 200]` — synthesize and play a single line of text. If `--voice-config` is given, it overrides the individual voice flags.
-- `routinenotifier cache-clear [-y] [--cache-dir <path>]` — clear cached audio files.
+Using pip (editable):
 
-Voice config JSON
-- Example: `examples/voice.json`
-  - `language_code`: BCP-47 code (`ja-JP`, `en-US`, ...)
-  - `voice_name`: specific voice name (optional)
-  - `speaking_rate`: float [0.25, 4.0]
-  - `pitch`: float [-20.0, 20.0] (semitones)
-  - `audio_encoding`: `MP3` | `LINEAR16` | `OGG_OPUS`
+```bash
+python -m venv .venv && source .venv/bin/activate
+pip install -e .
+```
 
-Scheduling behavior
-- Timezone: Interprets `time` in your machine’s local timezone (e.g., JST if your OS is set to Asia/Tokyo).
-- Trigger: Fires once per task per day when the system clock matches `HH:MM`.
-- Interval: Polls every second; adjustable via `--check-interval`.
+## How to Run
 
-Audio output
-- macOS: uses `afplay` or `open`
-- Linux: tries `aplay`/`paplay`/`mpg123`/`ffplay`
-- Windows: opens the default audio handler
-- If no player is found, the synthesized audio is saved to a temp file and the path is printed.
+Installed console script (recommended):
 
-Dev tools
-- Format: `black .`
-- Lint: `ruff check .`
-- Types: `mypy .`
-- Test: `pytest -q`
-Caching
-- Default: On-disk cache under XDG cache dir (about `~/.cache/routinenotifier/`).
+```bash
+routinenotifier validate examples/schedule.json
+routinenotifier run --config examples/schedule.json
+```
+
+Module form (no install):
+
+```bash
+python -m routinenotifier.cli validate examples/schedule.json
+python -m routinenotifier.cli run --config examples/schedule.json
+```
+
+Note: Do NOT run `python routinenotifier/cli.py …` — use the module form above or the installed script.
+
+## Configuration
+
+### Schedule (schedule.json)
+```json
+{
+  "schedules": [
+    {
+      "name": "Wake",
+      "time": "07:00",
+      "days": ["mon", "tue", "wed", "thu", "fri", "sat", "sun"],
+      "message": "Good morning"
+    }
+  ]
+}
+```
+
+### Voice (voice.json)
+```json
+{
+  "language_code": "ja-JP",
+  "voice_name": "ja-JP-Wavenet-A",
+  "speaking_rate": 1.0,
+  "pitch": 0.0,
+  "audio_encoding": "MP3"
+}
+```
+
+## CLI Commands
+
+Validate config:
+
+```bash
+routinenotifier validate path/to/config.json
+```
+
+Run scheduler (voice flags can be overridden by --voice-config):
+
+```bash
+routinenotifier run --config schedule.json \
+  --language-code ja-JP --voice-name ja-JP-Standard-A \
+  --speaking-rate 1.0 --pitch 0.0 --audio-encoding MP3 \
+  --voice-config examples/voice.json \
+  --no-cache --cache-dir ./cache --cache-max-mb 200
+```
+
+Speak once:
+
+```bash
+routinenotifier speak "こんにちは" --voice-config examples/voice.json
+```
+
+List voices:
+
+```bash
+routinenotifier voices -l ja-JP --json
+```
+
+Clear cache:
+
+```bash
+routinenotifier cache-clear -y --cache-dir ./cache
+```
+
+## Scheduling Behavior
+- Timezone: Uses your system local time (e.g., JST if OS is Asia/Tokyo).
+- Trigger: Once per task per day at exact `HH:MM`.
+- Polling: Checks every second; adjustable via `--check-interval`.
+
+## Audio Output
+- macOS: `afplay` (fallback `open`)
+- Linux: `aplay`/`paplay`/`mpg123`/`ffplay`
+- Windows: default audio handler
+- If no player is found, the synthesized audio is saved to a temp file and its path is printed.
+
+## Caching
+- Default: On‑disk cache under XDG cache (e.g., `~/.cache/routinenotifier/`).
 - Key: Text + voice parameters (language/voice/rate/pitch/encoding).
-- Control: `--no-cache`, `--cache-dir`, `--cache-max-mb` (0 disables size limit).
+- Control: `--no-cache`, `--cache-dir`, `--cache-max-mb` (0 = unlimited).
 - Maintenance: `routinenotifier cache-clear -y` to purge.
+
+## Development
+```bash
+# Format
+black .
+# Lint
+python -m ruff check .
+# Types
+python -m mypy .
+# Tests
+PYTHONPATH=. pytest -q
+```
