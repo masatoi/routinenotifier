@@ -37,4 +37,3 @@ def test_cli_validate_fail(tmp_path: Path):
     result = runner.invoke(app, ["validate", str(cfg_path)])
     assert result.exit_code != 0
     assert "validation" in result.output.lower()
-

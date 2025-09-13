@@ -30,4 +30,3 @@ def test_due_indices_skip_wrong_day():
     cfg = _cfg_at(7, 0, [Weekday.tue])
     now = datetime(2024, 1, 1, 7, 0)  # Monday
     assert due_indices(cfg, now=now) == []
-

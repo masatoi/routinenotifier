@@ -20,9 +20,7 @@ def _echo_schedules(cfg: AppConfig) -> None:
         typer.echo(f"- {s.name} @ {hhmm} on [{days}]")
 
 
-_CONFIG_ARG = typer.Argument(
-    ..., exists=True, readable=True, help="Path to JSON config"
-)
+_CONFIG_ARG = typer.Argument(..., exists=True, readable=True, help="Path to JSON config")
 
 
 @app.command()
@@ -138,6 +136,7 @@ def voices(
 
     if json_output:
         import json as _json
+
         payload = [
             {
                 "name": v.name,

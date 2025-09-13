@@ -39,10 +39,7 @@ def test_load_voice_config_bad_encoding(tmp_path: Path) -> None:
 
 
 def test_load_voice_config_bad_pitch(tmp_path: Path) -> None:
-    data = {
-        "language_code": "ja-JP",
-        "pitch": 30.0
-    }
+    data = {"language_code": "ja-JP", "pitch": 30.0}
     p = tmp_path / "voice.json"
     p.write_text(json.dumps(data), encoding="utf-8")
     with pytest.raises(ConfigError):

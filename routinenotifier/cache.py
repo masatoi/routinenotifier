@@ -194,4 +194,3 @@ class CachingSynthesizer:
             except Exception:
                 pass
         return data
-

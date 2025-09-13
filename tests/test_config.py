@@ -43,4 +43,3 @@ def test_invalid_time(tmp_path):
     p.write_text(__import__("json").dumps(cfg_json), encoding="utf-8")
     with pytest.raises(ConfigError):
         load_config(p)
-

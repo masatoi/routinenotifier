@@ -22,8 +22,10 @@ class FakeSynth(Synthesizer):  # type: ignore[misc]
         audio_encoding: str = "MP3",
     ) -> bytes:
         self.calls += 1
-        base = f"{text}|{language_code}|{voice_name}|{speaking_rate}|{pitch}|{audio_encoding}".encode(
-            "utf-8"
+        base = (
+            f"{text}|{language_code}|{voice_name}|{speaking_rate}|{pitch}|{audio_encoding}".encode(
+                "utf-8"
+            )
         )
         if len(base) >= self.payload_size:
             return base
@@ -61,4 +63,3 @@ def test_prune_cache_respects_size(tmp_path: Path) -> None:
     # Prune executed internally; total directory size should be <= 100KB
     total = sum(p.stat().st_size for p in tmp_path.glob("*") if p.is_file())
     assert total <= 100_000
-

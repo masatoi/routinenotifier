@@ -97,9 +97,7 @@ class VoiceConfig(BaseModel):
     pitch: float = Field(
         default=0.0, ge=-20.0, le=20.0, description="Pitch in semitones (-20.0..20.0)"
     )
-    audio_encoding: str = Field(
-        default="MP3", description="MP3, LINEAR16, or OGG_OPUS"
-    )
+    audio_encoding: str = Field(default="MP3", description="MP3, LINEAR16, or OGG_OPUS")
 
     @field_validator("audio_encoding")
     @classmethod
