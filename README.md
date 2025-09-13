@@ -40,9 +40,10 @@ Config schema
 
 CLI
 - `routinenotifier validate path/to/config.json` — validate config.
-- `routinenotifier run --config schedule.json [--language-code ja-JP --voice-name <name> --speaking-rate 1.0 --audio-encoding MP3] [--voice-config examples/voice.json]` — run scheduler. If `--voice-config` is given, it overrides the individual voice flags.
+- `routinenotifier run --config schedule.json [--language-code ja-JP --voice-name <name> --speaking-rate 1.0 --pitch 0.0 --audio-encoding MP3] [--voice-config examples/voice.json] [--no-cache] [--cache-dir <path>] [--cache-max-mb 200]` — run scheduler. If `--voice-config` is given, it overrides the individual voice flags.
 - `routinenotifier voices [-l ja-JP] [--json]` — list available Google TTS voices (optionally filter by language; `--json` for machine-readable output).
-- `routinenotifier speak "こんにちは" [--language-code ja-JP --voice-name <name> --speaking-rate 1.0 --audio-encoding MP3] [--voice-config examples/voice.json]` — synthesize and play a single line of text. If `--voice-config` is given, it overrides the individual voice flags.
+- `routinenotifier speak "こんにちは" [--language-code ja-JP --voice-name <name> --speaking-rate 1.0 --pitch 0.0 --audio-encoding MP3] [--voice-config examples/voice.json] [--no-cache] [--cache-dir <path>] [--cache-max-mb 200]` — synthesize and play a single line of text. If `--voice-config` is given, it overrides the individual voice flags.
+- `routinenotifier cache-clear [-y] [--cache-dir <path>]` — clear cached audio files.
 
 Voice config JSON
 - Example: `examples/voice.json`
@@ -68,3 +69,8 @@ Dev tools
 - Lint: `ruff check .`
 - Types: `mypy .`
 - Test: `pytest -q`
+Caching
+- Default: On-disk cache under XDG cache dir (about `~/.cache/routinenotifier/`).
+- Key: Text + voice parameters (language/voice/rate/pitch/encoding).
+- Control: `--no-cache`, `--cache-dir`, `--cache-max-mb` (0 disables size limit).
+- Maintenance: `routinenotifier cache-clear -y` to purge.

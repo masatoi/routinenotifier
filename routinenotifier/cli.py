@@ -6,6 +6,7 @@ from typing import Optional
 import typer
 
 from .config import AppConfig, ConfigError, VoiceConfig, load_config, load_voice_config
+from .cache import CachingSynthesizer
 from .scheduler import run_forever
 from .tts import GoogleTTS, list_voices
 
@@ -48,6 +49,9 @@ _RATE_OPT = typer.Option(1.0, help="Speaking rate for TTS (0.25 - 4.0)")
 _PITCH_OPT = typer.Option(0.0, help="Pitch in semitones (-20.0..20.0)")
 _ENC_OPT = typer.Option("MP3", help="Audio encoding: MP3, LINEAR16, OGG_OPUS")
 _INTERVAL_OPT = typer.Option(1.0, help="Polling interval in seconds")
+_NO_CACHE_OPT = typer.Option(False, help="Disable on-disk audio cache")
+_CACHE_DIR_OPT = typer.Option(None, help="Cache directory (defaults to XDG cache)")
+_CACHE_MAX_MB_OPT = typer.Option(200, help="Cache size limit in MB (0 for unlimited)")
 
 
 @app.command()
@@ -59,6 +63,9 @@ def run(
     pitch: float = _PITCH_OPT,
     audio_encoding: str = _ENC_OPT,
     check_interval: float = _INTERVAL_OPT,
+    no_cache: bool = _NO_CACHE_OPT,
+    cache_dir: Optional[Path] = _CACHE_DIR_OPT,
+    cache_max_mb: int = _CACHE_MAX_MB_OPT,
     voice_config: Optional[Path] = typer.Option(
         None, help="Path to JSON with voice settings (overrides voice flags)"
     ),
@@ -75,7 +82,14 @@ def run(
     typer.echo("Starting scheduler. Press Ctrl+C to stop.")
 
     try:
-        tts = GoogleTTS()
+        base_tts = GoogleTTS()
+        if no_cache:
+            tts = base_tts
+        else:
+            max_bytes = 0 if cache_max_mb <= 0 else int(cache_max_mb * 1024 * 1024)
+            tts = CachingSynthesizer(
+                base_tts, cache_dir=cache_dir, enabled=True, max_size_bytes=max_bytes
+            )
     except Exception as e:  # pragma: no cover - import path
         typer.secho(str(e), fg=typer.colors.RED)
         raise typer.Exit(code=2) from e
@@ -155,6 +169,9 @@ def speak(
     speaking_rate: float = _RATE_OPT,
     pitch: float = _PITCH_OPT,
     audio_encoding: str = _ENC_OPT,
+    no_cache: bool = _NO_CACHE_OPT,
+    cache_dir: Optional[Path] = _CACHE_DIR_OPT,
+    cache_max_mb: int = _CACHE_MAX_MB_OPT,
     voice_config: Optional[Path] = typer.Option(
         None, help="Path to JSON with voice settings (overrides voice flags)"
     ),
@@ -174,7 +191,14 @@ def speak(
         audio_encoding = vcfg.audio_encoding
 
     try:
-        tts = GoogleTTS()
+        base_tts = GoogleTTS()
+        if no_cache:
+            tts = base_tts
+        else:
+            max_bytes = 0 if cache_max_mb <= 0 else int(cache_max_mb * 1024 * 1024)
+            tts = CachingSynthesizer(
+                base_tts, cache_dir=cache_dir, enabled=True, max_size_bytes=max_bytes
+            )
     except Exception as e:  # pragma: no cover - import path
         typer.secho(str(e), fg=typer.colors.RED)
         raise typer.Exit(code=2) from e
@@ -190,3 +214,29 @@ def speak(
         audio_encoding=audio_encoding,
     )
     play_audio_bytes(audio, encoding=audio_encoding)
+
+
+@app.command()
+def cache_clear(
+    cache_dir: Optional[Path] = _CACHE_DIR_OPT,
+    yes: bool = typer.Option(False, "--yes", "-y", help="Confirm deletion without prompt"),
+) -> None:
+    """Clear all cached audio files."""
+    from .cache import _default_cache_root
+
+    target = cache_dir or _default_cache_root()
+    if not yes:
+        typer.echo(f"About to remove cache directory: {target}")
+        confirm = typer.confirm("Proceed?", default=False)
+        if not confirm:
+            typer.echo("Aborted.")
+            return
+    try:
+        if target.exists():
+            for p in target.glob("*"):
+                if p.is_file():
+                    p.unlink(missing_ok=True)
+        typer.secho("Cache cleared.", fg=typer.colors.GREEN)
+    except Exception as e:
+        typer.secho(f"Failed to clear cache: {e}", fg=typer.colors.RED)
+        raise typer.Exit(code=1) from e

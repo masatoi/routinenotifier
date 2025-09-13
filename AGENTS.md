@@ -43,6 +43,15 @@
   - Describe change, rationale, and how to validate (commands/examples).
   - Ensure: `black`, `ruff`, `mypy`, and `pytest` all pass.
   - Include docs updates (README/examples) for user-facing changes.
+  - Update design docs under `design/` when behavior, interfaces, or architecture changes.
+
+## Design Docs Updates
+- Keep `design/` in sync with code changes (especially `design/implementation.md`).
+- Document:
+  - What changed (modules/functions, CLI flags, config schema).
+  - Why it changed (trade-offs, alternatives considered briefly).
+  - How to use it (short commands or JSON snippets).
+- Example: after adding `--pitch` and `voice.json` schema, update sections describing `VoiceConfig`, CLI flags, and examples.
 
 ## Security & Configuration Tips
 - Do not commit secrets. Use ADC for GCP:
