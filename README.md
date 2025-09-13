@@ -44,6 +44,8 @@ Installed console script (recommended):
 ```bash
 routinenotifier validate examples/schedule.json
 routinenotifier run --config examples/schedule.json
+
+Note: If `--config` is omitted, the CLI looks for `~/schedule.json` by default.
 ```
 
 Module form (no install):
@@ -76,9 +78,9 @@ Note: Do NOT run `python routinenotifier/cli.py …` — use the module form abo
 {
   "language_code": "ja-JP",
   "voice_name": "ja-JP-Wavenet-A",
-  "speaking_rate": 1.0,
-  "pitch": 0.0,
-  "audio_encoding": "MP3"
+  "speaking_rate": 1.2,
+  "pitch": -3.0,
+  "audio_encoding": "OGG_OPUS"
 }
 ```
 
@@ -98,6 +100,8 @@ routinenotifier run --config schedule.json \
   --speaking-rate 1.0 --pitch 0.0 --audio-encoding MP3 \
   --voice-config examples/voice.json \
   --no-cache --cache-dir ./cache --cache-max-mb 200
+
+If `--config` is omitted, the default path is `~/schedule.json`.
 ```
 
 Speak once:

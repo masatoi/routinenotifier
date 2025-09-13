@@ -125,10 +125,10 @@ class CachingSynthesizer:
         text: str,
         *,
         language_code: str = "ja-JP",
-        voice_name: str | None = None,
-        speaking_rate: float = 1.0,
-        pitch: float = 0.0,
-        audio_encoding: str = "MP3",
+        voice_name: str | None = "ja-JP-Wavenet-A",
+        speaking_rate: float = 1.2,
+        pitch: float = -3.0,
+        audio_encoding: str = "OGG_OPUS",
     ) -> bytes:
         if not self.enabled:
             return self.inner.synthesize(

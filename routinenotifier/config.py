@@ -92,12 +92,14 @@ class VoiceConfig(BaseModel):
     language_code: str = Field(
         default="ja-JP", description="BCP-47 language code like ja-JP or en-US"
     )
-    voice_name: str | None = Field(default=None, description="Specific TTS voice name")
-    speaking_rate: float = Field(default=1.0, ge=0.25, le=4.0, description="Speaking rate")
-    pitch: float = Field(
-        default=0.0, ge=-20.0, le=20.0, description="Pitch in semitones (-20.0..20.0)"
+    voice_name: str | None = Field(
+        default="ja-JP-Wavenet-A", description="Specific TTS voice name"
     )
-    audio_encoding: str = Field(default="MP3", description="MP3, LINEAR16, or OGG_OPUS")
+    speaking_rate: float = Field(default=1.2, ge=0.25, le=4.0, description="Speaking rate")
+    pitch: float = Field(
+        default=-3.0, ge=-20.0, le=20.0, description="Pitch in semitones (-20.0..20.0)"
+    )
+    audio_encoding: str = Field(default="OGG_OPUS", description="MP3, LINEAR16, or OGG_OPUS")
 
     @field_validator("audio_encoding")
     @classmethod

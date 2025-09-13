@@ -35,16 +35,16 @@ def validate(config: Path = _CONFIG_ARG) -> None:
 
 
 _CONFIG_OPT = typer.Option(
-    Path("schedule.json"),
+    Path.home() / "schedule.json",
     exists=True,
     readable=True,
     help="Path to JSON config",
 )
 _LANG_OPT = typer.Option("ja-JP", help="Language code for TTS")
-_VOICE_OPT = typer.Option(None, help="Specific voice name (optional)")
-_RATE_OPT = typer.Option(1.0, help="Speaking rate for TTS (0.25 - 4.0)")
-_PITCH_OPT = typer.Option(0.0, help="Pitch in semitones (-20.0..20.0)")
-_ENC_OPT = typer.Option("MP3", help="Audio encoding: MP3, LINEAR16, OGG_OPUS")
+_VOICE_OPT = typer.Option("ja-JP-Wavenet-A", help="Specific voice name (optional)")
+_RATE_OPT = typer.Option(1.2, help="Speaking rate for TTS (0.25 - 4.0)")
+_PITCH_OPT = typer.Option(-3.0, help="Pitch in semitones (-20.0..20.0)")
+_ENC_OPT = typer.Option("OGG_OPUS", help="Audio encoding: MP3, LINEAR16, OGG_OPUS")
 _INTERVAL_OPT = typer.Option(1.0, help="Polling interval in seconds")
 _NO_CACHE_OPT = typer.Option(False, help="Disable on-disk audio cache")
 _CACHE_DIR_OPT = typer.Option(None, help="Cache directory (defaults to XDG cache)")
